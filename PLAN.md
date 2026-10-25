@@ -19,19 +19,17 @@ Last updated: 2026-10-25
 
 Each step is ≤15 minutes of your time (training itself runs unattended).
 
-1. **Finish the missing training data** (135 examples). Add to: `training/teaching_python_js.jsonl` (+15),
+1. **(Optional) Finish the missing training data** (135 examples). Training already works without it. Add to: `training/teaching_python_js.jsonl` (+15),
    `training/security_appsec.jsonl` (+15), `training/python_ai_pytorch.jsonl` (+15). Create:
    `training/teaching_c_bash_algorithms.jsonl` (45) and `training/reasoning_practical.jsonl` (45).
    Done when: about 600 new examples in total, all passing the format and compile checks.
-2. **Dry-run the 8B data formatting** — run `uv run --with datasets cloud/train_8b.py --dry-run` on a machine
-   with ≥16 GB free memory (it was killed for lack of memory while other jobs ran).
-   Done when: it prints the example count and one formatted example.
-3. **Rent a GPU** — RunPod or Vast.ai, 24 GB+ NVIDIA GPU (e.g. RTX 4090, L4, A5000), PyTorch/CUDA image.
-   Done when: you can open a terminal on it.
-4. **Train in the cloud** — `git clone` this repo on the machine, `bash cloud/setup.sh`,
-   `python cloud/train_8b.py`. Done when: it prints the path of a `.gguf` file (~5 GB).
-5. **Download and stop the GPU** — copy the `.gguf` to your Mac, then stop/delete the rented machine.
-   Done when: the file is on your Mac and the provider shows no running machines.
+2. ~~Dry-run the 8B data formatting~~ — done: 566 training texts, 64 validation, all ≤4096 tokens.
+3. **Open the Colab notebook** — https://colab.research.google.com/github/obsdnx/local-llm-/blob/main/cloud/train_8b_colab.ipynb
+   Runtime → Change runtime type → A100 GPU (or L4). Done when: the GPU check cell prints the GPU name.
+4. **Train in Colab** — Runtime → Run all, allow Google Drive access, keep the tab open (~1–2 hours).
+   Done when: the last cell lists a `.gguf` file (~5 GB) in Drive folder `forge`.
+5. **Download and stop Colab** — download the `.gguf` from Google Drive, then
+   Runtime → Disconnect and delete runtime. Done when: the file is on your Mac.
 6. **Install on the Mac** — `bash cloud/install_on_mac.sh path/to/file.gguf`.
    Done when: `uv run chat.py --model forge-8b` answers as Forge.
 7. **Compare** — ask `forge` and `forge-8b` the same 5 questions from your topics.
@@ -41,6 +39,8 @@ Each step is ≤15 minutes of your time (training itself runs unattended).
 
 - **Cloudflare Workers can't be used for training.** As far as I know, Cloudflare doesn't rent GPU machines
   you can train on; Workers AI runs hosted models for inference. Use RunPod / Vast.ai / Lambda for training.
+- **Training platform: Google Colab Pro** (chosen 2026-10-25). Alternatives: RunPod Secure Cloud
+  (~$1–2 per run), Kaggle (free, slower). The same script runs on all of them.
 - **Hosting as a website** (later): start with Open WebUI on the Mac + Tailscale (free, private).
   Move to a serverless GPU only if you want to share it.
 - **Buying hardware**: wait until after step 7. If needed: Mac with ≥64 GB for MLX, or

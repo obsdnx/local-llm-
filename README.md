@@ -36,7 +36,15 @@ Test a lookup: `uv run rag.py search "mqtt tls port"`.
 Rule of thumb: fine-tuning changes *how* it answers (style, focus).
 RAG changes *what it knows*. For new facts, use RAG.
 
-## Train the 8B model on a rented cloud GPU
+## Train the 8B model on Google Colab Pro (recommended)
+
+1. Open the notebook: https://colab.research.google.com/github/obsdnx/local-llm-/blob/main/cloud/train_8b_colab.ipynb
+2. **Runtime → Change runtime type → A100 GPU**, then **Runtime → Run all**. Allow Google Drive access.
+3. After 1–2 hours, download the `.gguf` file from Google Drive folder `forge`.
+4. On your Mac: `bash cloud/install_on_mac.sh ~/Downloads/<file>.gguf`, then `uv run chat.py --model forge-8b`.
+5. In Colab: **Runtime → Disconnect and delete runtime**.
+
+## Or: train the 8B model on a rented cloud GPU (RunPod etc.)
 
 Your Mac can run an 8B model but can't train one reliably. Rent an NVIDIA GPU (24 GB+, e.g. RunPod or Vast.ai):
 
