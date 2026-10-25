@@ -3,6 +3,9 @@
 Runs fully on your Mac. Base model: Qwen3 4B (Apache 2.0). Fine-tuned with Apple MLX.
 Looks things up in your own documents (RAG).
 
+**Training:** the 8B model (Qwen3-8B, `forge-8b`) was fine-tuned on an NVIDIA A100 GPU on Google Colab Pro,
+using `cloud/train_8b_colab.ipynb`.
+
 See `ARCHITECTURE.md` for how the pieces fit and `PLAN.md` for status and next steps.
 
 Forge is trained for: C programming, teaching code, step-by-step reasoning,
