@@ -3,6 +3,8 @@
 Runs fully on your Mac. Base model: Qwen3 4B (Apache 2.0). Fine-tuned with Apple MLX.
 Looks things up in your own documents (RAG).
 
+See `ARCHITECTURE.md` for how the pieces fit and `PLAN.md` for status and next steps.
+
 Forge is trained for: C programming, teaching code, step-by-step reasoning,
 cybersecurity, Linux, and Python AI model training.
 
@@ -34,6 +36,16 @@ Test a lookup: `uv run rag.py search "mqtt tls port"`.
 Rule of thumb: fine-tuning changes *how* it answers (style, focus).
 RAG changes *what it knows*. For new facts, use RAG.
 
+## Train the 8B model on a rented cloud GPU
+
+Your Mac can run an 8B model but can't train one reliably. Rent an NVIDIA GPU (24 GB+, e.g. RunPod or Vast.ai):
+
+1. On the rented machine: `git clone` this repo, then `bash cloud/setup.sh`.
+2. Run `python cloud/train_8b.py`. It prints the path of a `.gguf` file (about 5 GB).
+3. Download that file to your Mac, then **stop the rented machine** (it costs money while running).
+4. On your Mac: `bash cloud/install_on_mac.sh path/to/file.gguf`.
+5. Chat: `uv run chat.py --model forge-8b`.
+
 ## Change the rules / personality
 
 Edit `Modelfile` (Ollama) and `SYSTEM_PROMPT` in `chat.py`, then run `ollama create forge -f Modelfile`.
@@ -45,4 +57,5 @@ Edit `Modelfile` (Ollama) and `SYSTEM_PROMPT` in `chat.py`, then run `ollama cre
 - `rag.py` — indexes `knowledge/` with the `nomic-embed-text` embedding model
 - `training/*.jsonl` — fine-tuning examples, one file per topic
 - `prepare_data.py` — builds `data/train.jsonl` + `data/valid.jsonl`
-- `train.sh` — fine-tune (LoRA) + fuse into `forge-fused/`
+- `train.sh` — Mac fine-tune (LoRA, 4B) + fuse into `forge-fused/`
+- `cloud/` — 8B fine-tuning on a rented GPU, and installing the result into Ollama

@@ -4,6 +4,7 @@ Usage:
     uv run chat.py               # chat with the Ollama model "forge" (Modelfile only)
     uv run chat.py --tuned       # chat with your fine-tuned model (start mlx server first, see README)
     uv run chat.py --no-rag      # don't look anything up in knowledge/
+    uv run chat.py --model forge-8b   # use another Ollama model
 
 In chat: /reset clears the conversation, /exit quits.
 """
@@ -72,9 +73,12 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--tuned", action="store_true", help="use the fine-tuned model served by mlx_lm.server")
     parser.add_argument("--no-rag", action="store_true", help="don't search knowledge/")
+    parser.add_argument("--model", help="Ollama model name (default: forge)")
     args = parser.parse_args()
 
-    backend = BACKENDS["tuned" if args.tuned else "ollama"]
+    backend = dict(BACKENDS["tuned" if args.tuned else "ollama"])
+    if args.model:
+        backend["model"] = args.model
     use_rag = not args.no_rag and rag.index_exists()
     print(f"Forge ({backend['model']}, RAG {'on' if use_rag else 'off'}). /reset to clear, /exit to quit.")
 

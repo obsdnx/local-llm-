@@ -8,3 +8,4 @@ rag_index/
 # your own documents stay private; only the starter note is committed
 knowledge/*
 !knowledge/iot-basics.md
+Modelfile.8b
