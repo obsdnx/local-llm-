@@ -84,6 +84,12 @@ def train() -> None:
     from datasets import Dataset
     from trl import SFTConfig, SFTTrainer
 
+    import torch
+
+    gpu_gb = torch.cuda.get_device_properties(0).total_memory / 1e9
+    small_gpu = gpu_gb < 20  # e.g. Colab T4 (16 GB): smaller batches so it doesn't run out of memory
+    print(f"GPU: {torch.cuda.get_device_name(0)} ({gpu_gb:.0f} GB){' - small GPU settings' if small_gpu else ''}")
+
     model, tokenizer = FastLanguageModel.from_pretrained(
         model_name=BASE_MODEL,
         max_seq_length=MAX_SEQ_LENGTH,
@@ -111,8 +117,9 @@ def train() -> None:
         eval_dataset=valid_ds,
         args=SFTConfig(
             dataset_text_field="text",
-            per_device_train_batch_size=2,
-            gradient_accumulation_steps=4,
+            per_device_train_batch_size=1 if small_gpu else 2,
+            gradient_accumulation_steps=8 if small_gpu else 4,  # same effective batch of 8 either way
+            per_device_eval_batch_size=1 if small_gpu else 2,
             num_train_epochs=3,
             learning_rate=1e-4,
             warmup_steps=10,
