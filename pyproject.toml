@@ -1,0 +1,10 @@
+[project]
+name = "local-llm"
+version = "0.1.0"
+description = "Local, fully open-source custom LLM: Ollama + MLX fine-tuning + RAG"
+requires-python = ">=3.12"
+dependencies = [
+    "mlx-lm>=0.32.2",
+    "numpy>=2.5.4",
+    "pypdf>=6.21.2",
+]
